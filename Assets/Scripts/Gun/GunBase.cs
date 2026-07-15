@@ -10,28 +10,10 @@ public class GunBase : MonoBehaviour
     public float TimeBetweenShots = 0.2f;
 
     private Coroutine _currentCoroutine;
-    //public AudioRandomPlayAudioClips randomShoot;
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator ShootCoroutine()
     {
-        if(Input.GetKeyDown(KeyCode.S))
-        {
-            _currentCoroutine = StartCoroutine(StartShoot());
-        }
-        else if (Input.GetKeyUp(KeyCode.S))
-        {
-            if (_currentCoroutine != null)
-            {
-                StopCoroutine(_currentCoroutine);
-            }
-
-        }
-    }
-
-    IEnumerator StartShoot()
-    {
-        while(true)
+        while (true)
         {
             Shoot();
             yield return new WaitForSeconds(TimeBetweenShots);
@@ -45,5 +27,20 @@ public class GunBase : MonoBehaviour
         var projectile = Instantiate(prefabProjectile);
         projectile.transform.position = positionToShoot.position;
         projectile.transform.rotation = positionToShoot.rotation;
+    }
+
+    public void StartShoot()
+    {
+        StopShoot();
+        _currentCoroutine = StartCoroutine(ShootCoroutine());
+        
+    }
+
+    public void StopShoot()
+    {
+        if (_currentCoroutine != null)
+        {
+            StopCoroutine(_currentCoroutine);
+        }
     }
 }
