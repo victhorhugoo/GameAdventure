@@ -25,7 +25,11 @@ public class Player1 : MonoBehaviour
     public float speedRun = 1.5f;
 
     [Header("Shoot Setup")]
+    [Header("Shoot Setup")]
     public KeyCode KeyShoot = KeyCode.Mouse0;
+    public Transform firePoint;       
+    public GameObject bulletPrefab;   
+    public float bulletSpeed = 20f;
 
     public StateMachine<PlayerStates> stateMachine;
 
@@ -108,7 +112,24 @@ public class Player1 : MonoBehaviour
 
     public void Shoot()
     {
-        // Coloque aqui a lógica real de tiro (instanciar projétil, raycast, etc.)
+        
         Debug.Log("Shoot!");
+        if (bulletPrefab == null || firePoint == null)
+        {
+            Debug.LogWarning($"[{name}] Shoot: firePoint ou bulletPrefab não atribuído no Inspector.");
+            return;
+        }
+
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+
+        if (bullet.TryGetComponent(out Rigidbody bulletRb))
+        {
+            bulletRb.velocity = firePoint.forward * bulletSpeed;
+        }
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Shoot");
+        }
     }
 }
